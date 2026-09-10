@@ -1,18 +1,18 @@
-from typing import Any, Union, Literal
+from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict
 
 
-JSONRPC_VERSON = "2.0"
-
+JsonRpcVersionType = Literal["2.0"]
 ParamsType = dict[str, Any] | list[Any] | None
+IdType = str | int
 
-IdType = Union[str, int]
 
+JSONRPC_VERSON: JsonRpcVersionType = "2.0"
 
 class Request(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    jsonrpc: Literal["2.0"]
+    jsonrpc: JsonRpcVersionType
     id: IdType
     method: str
     params: ParamsType = None
@@ -20,7 +20,7 @@ class Request(BaseModel):
 class Notification(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    jsonrpc: Literal["2.0"]
+    jsonrpc: JsonRpcVersionType
     method: str
     params: ParamsType = None
 
@@ -32,15 +32,15 @@ class ErrorObject(BaseModel):
 class SuccessResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    jsonrpc: Literal["2.0"] = JSONRPC_VERSON
+    jsonrpc: JsonRpcVersionType = JSONRPC_VERSON
     id: IdType | None
     result = Any
 
 class ErrorResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    jsonrpc: Literal["2.0"] = JSONRPC_VERSON
+    jsonrpc: JsonRpcVersionType = JSONRPC_VERSON
     id: IdType | None
     error: ErrorObject
 
-Response = Union[SuccessResponse, ErrorResponse]
+Response = SuccessResponse | ErrorResponse
